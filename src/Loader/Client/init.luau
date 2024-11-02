@@ -29,12 +29,14 @@ return function()
 	for _, controller in Client.Controllers do
 		controller:Init()
 	end
+
+	print(PRINT_TAG,"[✅] All controllers initialized!")
 	
 	RunService.Heartbeat:Connect(function(dt)
 		
 	end)
 
-	print(PRINT_TAG,"[✅] All systems initialized!")
+	print(PRINT_TAG,"[✅] >> READY <<")
 
 	return Client
 end
