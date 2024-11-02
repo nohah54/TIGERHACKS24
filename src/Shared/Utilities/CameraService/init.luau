@@ -92,7 +92,7 @@ local cam = workspace.CurrentCamera or workspace:WaitForChild("Camera")
 local TWEEN_INFO = TweenInfo.new(.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 local currentCamPosition = Vector3.zero
 local cameraRotation = Vector2.zero
-local currentCharacter = player.Character or player.CharacterAdded:Wait()
+local currentCharacter = player.Character
 local offset = Vector3.zero
 local updateShake = 0
 local delta;
@@ -144,7 +144,7 @@ local CameraService = {
 	Offset = CFrame.new(),
 	TiltFactor = CFrame.fromEulerAnglesYXZ(0,0,0),
 	Angle = 60,
-	Host = currentCharacter:WaitForChild("Humanoid").RigType == Enum.HumanoidRigType.R15 and currentCharacter:WaitForChild("HumanoidRootPart") or currentCharacter:WaitForChild("Torso"),
+	Host = nil,
 }
 
 ---> Camera System Functions <---

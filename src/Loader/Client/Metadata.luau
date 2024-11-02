@@ -24,7 +24,9 @@ local Value = Fusion.Value
 
 local Metadata = {
     Values = {
-        TreeState = Value(TREE_STATES.OUT_OF_GAME)
+        TreeState = Value(TREE_STATES.OUT_OF_GAME),
+        TreeFocus = Value(nil),
+        ControlledTree = Value(nil)
     }
 }
 

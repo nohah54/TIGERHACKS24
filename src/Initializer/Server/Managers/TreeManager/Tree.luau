@@ -18,15 +18,27 @@ CLASS_Tree.__class = "CLASS_Tree"
 export type CLASS_Tree = typeof(setmetatable({} :: {
 	Server: any,
     TreeID: number,
-    PlayerID: Player?, -- if PlayerID is 'nil', then we assume no player is in control
+    TreePart: BasePart,
+    PlayerID: number, -- if PlayerID is 'nil', then we assume no player is in control
 }, CLASS_Tree))
 
-function CLASS_Tree.new(server: any, treeID: number)
+function CLASS_Tree.new(server: any, treePart: BasePart)
 	local self : CLASS_Tree = setmetatable({
 		Server = server,
-        TreeID = treeID,
-        PlayerID = nil,
+        TreeID = treePart:GetAttribute("TreeID") :: number,
+        TreePart = treePart,
+        PlayerID = 0,
 	}, CLASS_Tree)
+
+    treePart:GetAttributeChangedSignal("PlayerID"):Connect(function() 
+        self.PlayerID = treePart:GetAttribute("PlayerID") :: number
+
+        if self.PlayerID == 0 then
+            print(PRINT_TAG, "No Occupant")
+        else
+            print(PRINT_TAG, self.PlayerID, "Controlling!")
+        end
+    end)
 
 	return self
 end

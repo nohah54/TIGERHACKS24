@@ -68,6 +68,7 @@ function GameManager:StartGame()
     local RoundManager = Managers["RoundManager"]
     local RoundConfig = FLDR_Project.RoundInfo.RoundConfig
 
+    self.GameConfig:SetAttribute("Round",1)
     local currRound = task.spawn(function() RoundManager:Loop() end)
     print(PRINT_TAG, "Starting First Round")
 
@@ -77,9 +78,10 @@ function GameManager:StartGame()
             local RoundNum = self.GameConfig:GetAttribute("Round")
             if RoundNum < MAX_WAVES and RoundNum>0 then
                 print(PRINT_TAG, "Starting New Round")
+                self.GameConfig:SetAttribute("Round",RoundNum+1)
                 task.spawn(function() RoundManager:Loop() end)
             else
-                self.EndGame()
+                self:EndGame()
             end
         else
             print(PRINT_TAG, "Round Ongoing")
