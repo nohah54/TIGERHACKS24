@@ -10,16 +10,14 @@
     },
 
     "ServerScriptService": {
-      "Server": {
-        "$path": "src/server"
+      "Initializer": {
+        "$path": "src/Initializer"
       }
     },
 
-    "StarterPlayer": {
-      "StarterPlayerScripts": {
-        "Client": {
-          "$path": "src/client"
-        }
+    "ReplicatedFirst": {
+      "Loader": {
+        "$path": "src/Loader"
       }
     },
 
