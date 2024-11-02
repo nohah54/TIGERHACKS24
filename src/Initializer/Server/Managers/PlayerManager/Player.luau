@@ -18,12 +18,14 @@ CLASS_Player.__class = "CLASS_Player"
 export type CLASS_Player = typeof(setmetatable({} :: {
 	Server: any,
     Player: Player,
+    TreeID: number?
 }, CLASS_Player))
 
 function CLASS_Player.new(player: Player, server: any)
 	local self : CLASS_Player = setmetatable({
 		Server = server,
         Player = player,
+        TreeID = nil
 	}, CLASS_Player)
 
     local leaderstats = Instance.new("Folder")

@@ -16,11 +16,10 @@ local FLDR_Controllers = script.Controllers
 local Client = {}
 
 Client.Controllers = {}
-Client.Metadata = {
-	Values = {},
-}
 
 return function()
+	Client.MetaData = require(script.Metadata)
+
 	for _, module in FLDR_Controllers:GetChildren() do
 		local requiredModule, nameIndex = require(module)(Client)
 		Client.Controllers[nameIndex] = requiredModule

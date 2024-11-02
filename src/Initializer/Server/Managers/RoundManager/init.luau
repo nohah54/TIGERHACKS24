@@ -21,7 +21,6 @@ local Camera = workspace.CurrentCamera
 
 -- [Manager]
 local RoundManager = {}
-
 function RoundManager:Init()
     
     -- initialize round config object (easy replication for clients)
@@ -29,14 +28,27 @@ function RoundManager:Init()
     self.RoundConfig.Name = "RoundConfig"
     self.RoundConfig.Parent = FLDR_RoundInfo
 
+    self.RoundConfig:SetAttribute("Active", false)
+    self.RoundConfig:SetAttribute("Timer", 0)
+    self.RoundConfig:SetAttribute("Wave", 0)
+
     -- round thread
+    -- todo: 
+        -- round timer, wave-based
+        -- 60s maybe
+    self:Setup()
     self.RoundThread = task.spawn(function() self:Loop() end)
 
     print(PRINT_TAG, "Initialized!")
 end
 
+function RoundManager:Setup()
+    self.RoundConfig:SetAttribute("Active", false)
+    self.RoundConfig:SetAttribute("Timer", 60)
+end
+
 function RoundManager:Loop()
-    while task.wait(1) do
+    while task.wait(1) do 
         
     end
 end
