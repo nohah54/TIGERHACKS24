@@ -10,8 +10,11 @@ local RunService = game:GetService("RunService")
 
 -- [Folders]
 local FLDR_Shared = ReplicatedStorage.Shared
-local FLDR_Controllers = script.Controllers
 local FLDR_Utilities = FLDR_Shared.Utilities
+
+-- [Enums]
+local _Enums = require(FLDR_Shared.Enums)
+local TREE_STATES = _Enums.TREE_STATES
 
 -- [Fusion]
 local Fusion = require(FLDR_Utilities.Fusion)
@@ -21,7 +24,7 @@ local Value = Fusion.Value
 
 local Metadata = {
     Values = {
-
+        TreeState = Value(TREE_STATES.OUT_OF_GAME)
     }
 }
 

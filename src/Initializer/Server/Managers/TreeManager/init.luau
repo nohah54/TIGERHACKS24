@@ -38,6 +38,18 @@ function TreeManager:Init()
     print(PRINT_TAG, "Initialized!")
 end
 
+function TreeManager:AreTreesAlive()
+    local treesAlive = false
+    for _, tree in FLDR_PlayerTrees:GetChildren() do
+        local health = tree:GetAttribute("Health")
+        if health>0 then
+            treesAlive=true
+            break
+        end
+    end
+    return treesAlive
+end
+
 -- [Pre-Init]
 return function(server)
     if server then

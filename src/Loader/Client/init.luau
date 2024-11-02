@@ -11,6 +11,10 @@ local RunService = game:GetService("RunService")
 -- [Folders]
 local FLDR_Shared = ReplicatedStorage.Shared
 local FLDR_Controllers = script.Controllers
+local FLDR_Remotes = FLDR_Shared.Remotes
+
+-- [Remotes]
+local RE_PlayerReady = FLDR_Remotes.RE_PR :: RemoteEvent
 
 -- [Client]
 local Client = {}
@@ -24,6 +28,8 @@ return function()
 		local requiredModule, nameIndex = require(module)(Client)
 		Client.Controllers[nameIndex] = requiredModule
 	end
+
+	print("Required")
 	
 	for _, controller in Client.Controllers do
 		controller:Init()
@@ -34,6 +40,8 @@ return function()
 	RunService.Heartbeat:Connect(function(dt)
 		
 	end)
+
+	RE_PlayerReady:FireServer()
 
 	print(PRINT_TAG,"[✅] >> READY <<")
 
