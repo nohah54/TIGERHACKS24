@@ -65,34 +65,28 @@ function ProjectileManager:SetupCasters()
     end    
 
     local function OnRayHit(cast, raycastResult, segmentVelocity, cosmeticBulletObject)
-        -- This function will be connected to the Caster's "RayHit" event.
         local hitPart = raycastResult.Instance
         local hitPoint = raycastResult.Position
         local normal = raycastResult.Normal
         if hitPart ~= nil and hitPart.Parent ~= nil then -- Test if we hit something
-            
+        print(hitPart)
+            if hitPart.Name == "EnemyBox" then
+                print("yes hit")
+                hitPart.Parent:Destroy()
+            end
         end
     end
     
     local function OnRayPierced(cast, raycastResult, segmentVelocity, cosmeticBulletObject)
-        -- You can do some really unique stuff with pierce behavior - In reality, pierce is just the module's way of asking "Do I keep the bullet going, or do I stop it here?"
-        -- You can make use of this unique behavior in a manner like this, for instance, which causes bullets to be bouncy.
         local position = raycastResult.Position
         local normal = raycastResult.Normal
         
         local newNormal = Reflect(normal, segmentVelocity.Unit)
         cast:SetVelocity(newNormal * segmentVelocity.Magnitude)
-        
-        -- It's super important that we set the cast's position to the ray hit position. Remember: When a pierce is successful, it increments the ray forward by one increment.
-        -- If we don't do this, it'll actually start the bounce effect one segment *after* it continues through the object, which for thin walls, can cause the bullet to almost get stuck in the wall.
         cast:SetPosition(position)
-        
-        -- Generally speaking, if you plan to do any velocity modifications to the bullet at all, you should use the line above to reset the position to where it was when the pierce was registered.
     end
     
     local function OnRayUpdated(cast, segmentOrigin, segmentDirection, length, segmentVelocity, cosmeticBulletObject)
-        -- Whenever the caster steps forward by one unit, this function is called.
-        -- The bullet argument is the same object passed into the fire function.
         if cosmeticBulletObject == nil then return end
         local bulletLength = cosmeticBulletObject.Size.Z / 2 -- This is used to move the bullet to the right spot based on a CFrame offset
         local baseCFrame = CFrame.new(segmentOrigin, segmentOrigin + segmentDirection)
@@ -102,8 +96,6 @@ function ProjectileManager:SetupCasters()
     local function OnRayTerminated(cast)
         local cosmeticBullet = cast.RayInfo.CosmeticBulletObject
         if cosmeticBullet ~= nil then
-            -- This code here is using an if statement on CastBehavior.CosmeticBulletProvider so that the example gun works out of the box.
-            -- In your implementation, you should only handle what you're doing (if you use a PartCache, ALWAYS use ReturnPart. If not, ALWAYS use Destroy.
             if CastBehavior.CosmeticBulletProvider ~= nil then
                 CastBehavior.CosmeticBulletProvider:ReturnPart(cosmeticBullet)
             else
@@ -114,6 +106,7 @@ function ProjectileManager:SetupCasters()
     
     for _, tree in treeManager.Trees do
         local caster = FastCast.new()
+        caster.DebugLogging = true
         self.Casters[tree.TreeID] = caster
 
         caster.RayHit:Connect(OnRayHit)
@@ -145,9 +138,7 @@ function ProjectileManager:FireProjectile(player: Player, mousePoint: Vector3)
     local caster = self.Casters[treeMatch.TreeID]
     if not caster then return end
 
-    local projectile = caster:Fire(treeMatch.TreePart.CameraPart.Position, mouseDirection, modifiedBulletSpeed, CastBehavior)
-
-    print("hello firing", projectile)
+    local _projectile = caster:Fire(treeMatch.TreePart.CameraPart.Position, mouseDirection, modifiedBulletSpeed, CastBehavior)
 end
 
 -- [Pre-Init]

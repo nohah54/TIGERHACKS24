@@ -90,7 +90,7 @@ function EnemyManager:SpawnEnemy()
     Enemy.Parent = FLDR_Enemy
     Enemy.Parent=FLDR_Enemy
     Enemy.Color = Color3.fromRGB(220,1,1)
-    Enemy.Transparency=.8
+    Enemy.Transparency = 1
     Path.CFrame = EnemySpawnPoint.CFrame
 
     local TargetValue = Instance.new("ObjectValue")
@@ -126,24 +126,49 @@ function EnemyManager:SpawnEnemy()
             end
         end
     end)
-        enemyPath.Completed:Connect(function()
-            if (Path.Position-TargetTree.Position).Magnitude <= 5 then
-                print(PRINT_TAG,"Enemy should be deleted")
-                local currentHealth = TargetTree:GetAttribute("Health")
-                TargetTree:SetAttribute("Health",currentHealth-1)
-                if currentHealth<=1 then
-                    if TargetTree:FindFirstChild("TreeModel") then  
-                        TargetTree.TreeModel.Anchored=false
-                        
-                    end
-                end
-                print(PRINT_TAG,"Enemy is getting destroyed")
-                FLDR_Enemy:Destroy()
+
+    task.spawn(function() 
+        local enemyCast
+
+        local function disconnect()
+            enemyCast:Disconnect()
+        end
+        local rayDirection = Vector3.new(0, -150, 0)
+
+        local raycastParams = RaycastParams.new()
+        raycastParams.FilterDescendantsInstances = {FLDR_Enemies}
+        raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+        raycastParams.IgnoreWater = true
+        
+        Enemy.CFrame = CFrame.new(Enemy.Position,TargetTree.Position)
+        enemyCast = RunService.Heartbeat:Connect(function()
+            if Path.Parent then
+                local raycastResult = workspace:Raycast(Path.Position, rayDirection, raycastParams)
+                Enemy.Position= raycastResult.Position + Vector3.new(0,3,0)
             else
-                print(PRINT_TAG,"tweenservice was completed but shouldn't get deleted")
+                Enemy:Destroy()
+                disconnect()
             end
         end)
+    end)
 
+    enemyPath.Completed:Connect(function()
+        if (Path.Position-TargetTree.Position).Magnitude <= 5 then
+            print(PRINT_TAG,"Enemy should be deleted")
+            local currentHealth = TargetTree:GetAttribute("Health")
+            TargetTree:SetAttribute("Health",currentHealth-1)
+            if currentHealth<=1 then
+                if TargetTree:FindFirstChild("TreeModel") then  
+                    TargetTree.TreeModel.Anchored=false
+                    
+                end
+            end
+            print(PRINT_TAG,"Enemy is getting destroyed")
+            FLDR_Enemy:Destroy()
+        else
+            print(PRINT_TAG,"tweenservice was completed but shouldn't get deleted")
+        end
+    end)
 end
 
 -- [Pre-Init]
