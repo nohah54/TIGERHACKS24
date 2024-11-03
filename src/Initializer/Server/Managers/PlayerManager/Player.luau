@@ -28,6 +28,9 @@ function CLASS_Player.new(player: Player, server: any)
         TreeID = nil
 	}, CLASS_Player)
 
+    --[[
+    no stats for now 
+
     local leaderstats = Instance.new("Folder")
     leaderstats.Name = "leaderstats"
     leaderstats.Parent = player
@@ -35,6 +38,7 @@ function CLASS_Player.new(player: Player, server: any)
     local killValue = Instance.new("NumberValue")
     killValue.Name = "Kills"
     killValue.Parent = leaderstats
+    ]]
 	
     print(PRINT_TAG, "Created:", player)
 

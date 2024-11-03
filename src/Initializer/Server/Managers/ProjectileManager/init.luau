@@ -20,6 +20,7 @@ local FLDR_Assets = FLDR_Shared.Assets
 
 -- [Remotes]
 local RE_FireProjectile = FLDR_Remotes.RE_FP :: RemoteEvent
+local RE_ProjectileHit = FLDR_Remotes.RE_PH :: RemoteEvent
 
 -- [Utilities]
 local FastCast = require(FLDR_Utilities.FastCastRedux)
@@ -69,10 +70,9 @@ function ProjectileManager:SetupCasters()
         local hitPoint = raycastResult.Position
         local normal = raycastResult.Normal
         if hitPart ~= nil and hitPart.Parent ~= nil then -- Test if we hit something
-        print(hitPart)
             if hitPart.Name == "EnemyBox" then
-                print("yes hit")
                 hitPart.Parent:Destroy()
+                print(cast)
             end
         end
     end
@@ -138,6 +138,7 @@ function ProjectileManager:FireProjectile(player: Player, mousePoint: Vector3)
     local caster = self.Casters[treeMatch.TreeID]
     if not caster then return end
 
+    caster.UserData = {Player = player}
     local _projectile = caster:Fire(treeMatch.TreePart.CameraPart.Position, mouseDirection, modifiedBulletSpeed, CastBehavior)
 end
 

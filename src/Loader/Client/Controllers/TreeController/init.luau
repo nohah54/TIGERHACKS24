@@ -28,8 +28,12 @@ local RE_FireProjectile = FLDR_Remotes.RE_FP :: RemoteEvent
 local Player = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 local Mouse = Player:GetMouse()
-
-local TWEEN_INFO = TweenInfo.new(1.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+local Highlight = Instance.new("Highlight")
+Highlight.FillTransparency = 1
+Highlight.OutlineTransparency = 0
+local Select = game.SoundService.Select
+local Hover = game.SoundService.Hover
+local Poof = game.SoundService.Poof
 
 -- [Utilities]
 local CameraService = require(FLDR_Utilities.CameraService)
@@ -37,6 +41,7 @@ local CameraService = require(FLDR_Utilities.CameraService)
 -- [Enums]
 local _Enums = require(FLDR_Shared.Enums)
 local TREE_STATES = _Enums.TREE_STATES
+local TWEEN_INFO = TweenInfo.new(1.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 
 -- [Fusion]
 local Fusion = require(FLDR_Utilities.Fusion)
@@ -88,9 +93,22 @@ function TreeController:Init()
             if inputState == Enum.UserInputState.End and values.TreeState:get() == TREE_STATES.CONTROLLING_TREE then
                 self:SetState(TREE_STATES.SELECTING_TREE)
                 RE_UnselectTree:FireServer()
+                Select:Play()
             end
         end
     end
+
+    local _onFocusedTreeChange = Observer(values.TreeFocus):onChange(function()
+        local tree = values.TreeFocus:get()
+
+        if tree then
+            Hover:Play()
+            Highlight.Parent = tree.TreeModel
+        else
+            Highlight.Parent = ReplicatedStorage
+        end
+
+    end)
 
     ContextActionService:BindAction("SELECTING_MODE", handleAction, true, Enum.KeyCode.Backspace)
 
@@ -129,6 +147,8 @@ function TreeController:Handle_ControllingTree()
         TweenService:Create(previousControlledTree.TreeModel, tweenInfo, {Transparency = 0}):Play()
     end
 
+
+    Highlight.Parent = ReplicatedStorage
     values.ControlledTree:set(focusedTree)
 
     local controlledTree = focusedTree
@@ -144,7 +164,6 @@ function TreeController:Handle_ControllingTree()
     -- 
     local lastShot = tick()
     self.MainThread = RunService.Heartbeat:Connect(function(dt: number)
-
         local buttons = UserInputService:GetMouseButtonsPressed()
 
         local m1Pressed = false
@@ -156,12 +175,11 @@ function TreeController:Handle_ControllingTree()
 
         if not m1Pressed then return end
 
-
-        if (tick() - lastShot) > 0.5 then
+        if (tick() - lastShot) > 0.1 then
             lastShot = tick()
-            print("hello")
 
             RE_FireProjectile:FireServer(Mouse.Hit.Position)
+            Poof:Play()
         end
     end)
 
